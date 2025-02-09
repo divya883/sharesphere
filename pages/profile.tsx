@@ -73,7 +73,7 @@ const ProfilePage: React.FC = () => {
               View and manage items or services you have listed.
             </p>
             <button
-              onClick={() => handleClick("/notifications")}
+              onClick={() => handleClick("/list")}
               className="mt-4 bg-pink-400 hover:bg-pink-600 text-white font-medium py-2 px-4 rounded-md transition"
             >
               View Listings
