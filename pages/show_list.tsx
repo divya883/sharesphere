@@ -5,17 +5,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import SearchBar from "@/components/ui/searchbar";
 import LitUpButton from "@/components/ui/litUpButton";
-import Cookies from "js-cookie";
-import router from "next/router";
 
 function ExpandableCardDemo() {
     const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
         null
     );
-    const listingData = {}
     const ref = useRef<HTMLDivElement>(null);
     const id = useId();
-    const [showPopup, setShowPopup] = useState(false);
 
     useEffect(() => {
         function onKeyDown(event: KeyboardEvent) {
@@ -34,57 +30,6 @@ function ExpandableCardDemo() {
         return () => window.removeEventListener("keydown", onKeyDown);
     }, [active]);
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        try {
-            const token = Cookies.get("token"); // Retrieve the JWT token from cookies
-
-            const response = await fetch("http://localhost:8080/api/listings", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || "Failed to create listing");
-            }
-
-            const result = await response.json();
-            console.log("Listing created successfully:", result);
-        } catch (error: any) {
-            console.error("Error during listing creation:", error);
-            alert("Failed to create listing: " + error.message);
-        }
-    }
-
-    const handleRequest = async (e: React.FormEvent<HTMLFormElement>) => {
-        try {
-            const token = Cookies.get("token");
-            console.log(token)
-            const response = await fetch("http://localhost:8080/api/requests", {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    "listingId": "67a8c540e261280d76954968",
-                    "message": "I need this adapter for my laptop."
-                })
-            });
-
-
-            const result = await response.json();
-            setShowPopup(true);
-            setTimeout(() => setShowPopup(false), 3000);
-
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
     useEffect(() => {
         document.documentElement.classList.add("dark");
     }, []);
@@ -98,16 +43,6 @@ function ExpandableCardDemo() {
                     <div className="flex flex-col items-center justify-center py-5 mt-5">
                         <SearchBar />
                     </div>
-                    {showPopup && (
-                        <motion.div
-                            initial={{ opacity: 0, x: 10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 10 }}
-                            className="fixed bottom-10 right-10 px-6 py-3 bg-green-600 text-white font-bold rounded-lg shadow-lg z-50"
-                        >
-                            REQUEST SUBMITTED
-                        </motion.div>
-                    )}
                     <AnimatePresence>
                         {active && typeof active === "object" && (
                             <motion.div
@@ -235,7 +170,6 @@ function ExpandableCardDemo() {
                                     </div>
                                 </div>
                                 <motion.button
-                                    onClick={() => handleRequest}
                                     layoutId={`button-${card.title}-${id}`}
                                     className="px-4 py-2 text-sm rounded-full font-bold bg-gray-700 hover:bg-green-500 hover:text-white text-white mt-4 md:mt-0"
                                 >
@@ -244,7 +178,7 @@ function ExpandableCardDemo() {
                             </motion.div>
                         ))}
                         <div className="flex justify-center mt-4">
-                            <span className='m-8'><LitUpButton title="Load More" position='center' handleClick={() => handleSubmit} /></span>
+                            <span className='m-8'><LitUpButton title="Load More" position='center' /></span>
                         </div>
                     </ul>
                 </div>
@@ -291,7 +225,7 @@ const cards = [
         description: "High-speed data transfer",
         title: "Type C Cable",
         src: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQRO-zwqUlBMHddaxBMF8QAjAqE4Q_RhbeF5Pe9ME7HpU8pbcdZpVGHM02IWZr6glCRHcGo7_9-gLalgEgjJsjf47K094hzePc_JE7igpxxSRBgL0TiZDf0hA",
-        ctaText: "Select",
+        ctaText: "Accept",
         ctaLink: "https://example.com/type-c-cable",
         content: () => {
             return (
@@ -309,7 +243,7 @@ const cards = [
         description: "High-definition video and audio",
         title: "HDMI Cable",
         src: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcR_SRf1Sz_vj1r93SpWzXGRQok7yYXbUsNQeLpuIQHIp4ydtBj_mlOVUwLRQGwgm-Zpm0U3iT8DC8O5tOz4F1nyf5Q_4Ej0-6_3_Y5oyY3U",
-        ctaText: "Select",
+        ctaText: "Accept",
         ctaLink: "https://example.com/hdmi-cable",
         content: () => {
             return (
@@ -327,7 +261,7 @@ const cards = [
         description: "Portable SSD",
         title: "Pendrive",
         src: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcR27duWgf8J0k1TUUWEiR13BLiTi7KIJC7M9hZTeRWKuRfhptAKH2qnd7uJ4VbCtoJAL-fD5EMtL1byJ4WRB-YTzTF46G6WUHg-GIqD2OEn2b0bCNuLltNv",
-        ctaText: "Select",
+        ctaText: "Accept",
         ctaLink: "https://example.com/pendrive",
         content: () => {
             return (
@@ -344,7 +278,7 @@ const cards = [
         description: "Laptop Charger",
         title: "Laptop Charger",
         src: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcTW_l2ygAHgcLkGOQHy3KhGtkjX1WRYxBNEp8uvVuwppMC2e5_IAsO5498OaIehp2F0JyD-Eq50lT9KRDMebhJaB5jX3ll3mmE_KuP2b_Do0vZbNpKWyGqy",
-        ctaText: "Select",
+        ctaText: "Accept",
         ctaLink: "https://example.com/laptop-charger",
         content: () => {
             return (
