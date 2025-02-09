@@ -4,6 +4,9 @@ import { userOptions } from '@/data';
 import { Button } from '@/components/ui/MovingBorders';
 
 const HomePage: React.FC = () => {
+
+    localStorage.setItem("points", 10);
+
     return (
         <div className="min-h-screen bg-dark-900 flex flex-col items-center justify-center p-8">
             <div className="text-center">

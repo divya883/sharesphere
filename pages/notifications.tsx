@@ -14,6 +14,8 @@ const Notifications: React.FC = () => {
 
   const handleAccept = () => {
     setShowPopup(true);
+    let val: number | null = parseInt(localStorage.getItem("points")) + 10;
+    localStorage.setItem("points", val);
     setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
   };
 
